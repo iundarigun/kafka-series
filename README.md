@@ -44,9 +44,29 @@ Os producers sabem automaticamente sem ter que programar nada onde vão escrever
 Existem três tipos  de confirmação:
 - acks=0 : Não é esperada confirmação. Pode perder mensagens se o broker estiver offline.
 - acks=1 : Espera a confirmação do líder. Em alguns casos, pode perder mensagens.
-- acks=all : é esperada a confirmação dos líderes e das réplicas.
+- acks=all : é esperada a confirmação dos líderes e das réplicas. 
 
 Podemos mandar as mensagens com uma key, que pode ser qualquer coisa. Nesse caso é garantido que cairá na mesma partição, preservando a ordenação das mensagens, mas a partição não é escolhida diretamente. **Isso é verdade enquanto o número de partições não mudar**.
+
+`Nota`: Quando selecionamos o `acks=all`, precisamos levar em consideração o fator de replicação e o mínimo de ISR. Então, se tiver um fator de replicação de 3, e a configuração de mínimo de ISR é 2, só poderemos ter um broker offline quando o produtor seja `acks=all`.
+
+Os produtores nas versões maiores da 2.1, vão retentar reenviar a mensagem bilhões de vezes, com um timeout de 100 ms entre tentativa. Esses parâmetros são configuráveis. Então, pelos dados, se houver algum erro, a retentativa vai tomar muito tempo, mas existe outro parâmetro que é o `producer timeout` que evita isso
+
+#### Imdepotência
+
+Nas versões iniciais do Kafka poderia acontecer o seguinte:
+
+![Imdepotencia](images/imdepotencia.png)
+
+Após a versão 0.11, o kafka gera um id de mensagem e sabe lidar com cenârios de duplicidade. É uma opção que precisa/pode ser ativada no producer.
+
+### Compressão
+
+As mensagens podem ser agrupadas e comprimidas para optimização de fluxos. Quanto mais mensagens, maior o ganho de performance:
+
+![Compressao](images/messageCompression.png)
+
+Para fazer isso precisamos brincar nas configurações dos producers para introduzir latência na produção, de forma que as mensagens possam ser agrupadas.
 
 ### Consumers
 
@@ -152,7 +172,7 @@ Este consumidor só vai ler as mensagens novas. Para ler  mensagens antigas:
 $ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --from-beginning
 ```
 
-###With keys
+### With keys
 
 ```
 $ kafka-console-consumer --bootstrap-server localhost:9092 --topic first_topic --from-beginning --property print.key=true --property key.separator=,
