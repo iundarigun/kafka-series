@@ -1,5 +1,11 @@
 # Kafka
 
+## Filas
+
+O protocolo AMQP:
+
+![AMQP](images/amqp-about.png)
+
 ## Conceitos
 
 ### Tópicos
@@ -111,9 +117,28 @@ Kafka não funciona sem zookeeper. Para um cluster de Kafka teremos um cluster d
 
 ![Resumo](images/resumo.png)
 
+
+### Diferenças entre RabbitMQ e Kakfa 
+
+https://itnext.io/kafka-vs-rabbitmq-f5abc02e3912
+
+
 ---
 
 ## Comandos CLI
+
+### Iniciando kafka
+
+Primeiro, startar o zookeeper:
+```
+$ zookeeper-server-start.sh /opt/kafka_2.12-2.3.0/config/zookeeper.properties 
+```
+O arquivo properties tem a linha `dataDir=/opt/kafka_2.12-2.3.0/data/zookeeper`
+
+```
+$ kafka-server-start.sh /opt/kafka_2.12-2.3.0/config/server.properties
+```
+O arquivo properties tem a linha `log.dirs=/opt/kafka_2.12-2.3.0/data/kafka`
 
 Topics: Precisamos especificar o zookeeper quando for usar o CLI para criação de Kafka topics. 
 ```
