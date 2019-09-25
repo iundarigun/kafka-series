@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: spring-cloud-stream
+  cloud:
+    stream:
+      default:
+        producer:
+          use-native-encoding: true
+      bindings:
+        cloud-stream-output:
+          destination: cloud-stream-topic
+        cloud-stream-input:
+          destination: cloud-stream-topic
+          group: cloud-stream-group
+      kafka:
+        binder:
+          configuration:
+            value:
+              serializer: org.apache.kafka.common.serialization.StringSerializer
+            key:
+              serializer: org.apache.kafka.common.serialization.StringSerializer
+  kafka:
+    bootstrap-servers: localhost:9092
