@@ -1,0 +1,8 @@
+server:
+  port: 8081
+kafka:
+  bootstrap-servers: http://localhost:9092
+  topic-name: kafka-spring-topic
+  consumer:
+    group-id: kafka-spring-group
+    concurrency: 5

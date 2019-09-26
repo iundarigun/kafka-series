@@ -12,6 +12,8 @@ spring:
         cloud-stream-input:
           destination: cloud-stream-topic
           group: cloud-stream-group
+          consumer:
+            concurrency: 5
       kafka:
         binder:
           configuration:

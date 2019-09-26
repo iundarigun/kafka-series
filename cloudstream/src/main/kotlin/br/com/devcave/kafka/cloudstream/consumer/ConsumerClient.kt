@@ -4,8 +4,9 @@ import org.springframework.cloud.stream.annotation.Input
 import org.springframework.messaging.SubscribableChannel
 
 
+const val CONSUMER_CHANNEL = "cloud-stream-input"
 
 interface ConsumerClient {
-    @Input("cloud-stream-input")
+    @Input(CONSUMER_CHANNEL)
     fun input(): SubscribableChannel
 }

@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.cloud.stream.annotation.StreamListener
-
+import java.util.*
 
 
 @Component
@@ -12,8 +12,11 @@ class ConsumerListener {
 
     val log: Logger = LoggerFactory.getLogger(ConsumerListener::class.java)
 
-    @StreamListener("cloud-stream-input")
+    @StreamListener(CONSUMER_CHANNEL)
     fun listen(message: String) {
-        log.info("M=listen, message={}", message)
+        val index = Random().nextInt()
+        log.info("M=listen, message=$message, index=$index")
+        Thread.sleep(10000)
+        log.info("M=listen, endConsumer, index=$index")
     }
 }
