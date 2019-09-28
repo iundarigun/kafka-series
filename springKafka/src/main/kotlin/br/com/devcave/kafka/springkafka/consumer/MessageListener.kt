@@ -1,5 +1,6 @@
 package br.com.devcave.kafka.springkafka.consumer
 
+import br.com.devcave.kafka.springkafka.domain.Employee
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -22,5 +23,14 @@ class MessageListener {
         println("Recieved Message: $message, index=$index")
         Thread.sleep(10_000)
         println("finish, index=$index")
+    }
+
+    @KafkaListener(
+        topics = ["\${kafka.topic-json-name}"],
+        containerFactory = "kafkaJsonListenerContainerFactory",
+        concurrency = "\${kafka.consumer.concurrency}"
+    )
+    fun listenJson(message: Employee) {
+        println("Recieved Message: $message")
     }
 }
