@@ -1,5 +1,6 @@
 server:
   port: 8081
+
 kafka:
   bootstrap-servers: http://localhost:9092
   topic-name: kafka-spring-topic
@@ -17,3 +18,5 @@ spring:
             add:
               type:
                 headers: false
+  application:
+    name: spring-kafka

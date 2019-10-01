@@ -3,9 +3,9 @@ package br.com.devcave.kafka.springkafka.consumer
 import br.com.devcave.kafka.springkafka.domain.Employee
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
 import org.springframework.kafka.annotation.KafkaListener
-import java.util.*
+import org.springframework.stereotype.Service
+import java.util.Random
 
 
 @Service
@@ -20,9 +20,9 @@ class MessageListener {
         )
     fun listenWithFilter(message: String) {
         val index = Random().nextInt()
-        println("Recieved Message: $message, index=$index")
+        log.info("Recieved Message: $message, index=$index")
         Thread.sleep(10_000)
-        println("finish, index=$index")
+        log.info("finish, index=$index")
     }
 
     @KafkaListener(
@@ -31,6 +31,6 @@ class MessageListener {
         concurrency = "\${kafka.consumer.concurrency}"
     )
     fun listenJson(message: Employee) {
-        println("Recieved Message: $message")
+        log.info("Recieved Message: $message")
     }
 }

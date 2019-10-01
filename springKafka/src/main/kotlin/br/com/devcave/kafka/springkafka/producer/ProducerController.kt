@@ -1,6 +1,7 @@
 package br.com.devcave.kafka.springkafka.producer
 
 import br.com.devcave.kafka.springkafka.domain.Employee
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
@@ -10,6 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import java.awt.SystemColor.text
 import java.time.Instant
 import java.time.LocalDate
 
@@ -21,17 +23,27 @@ class ProducerController(
     @Autowired val kafkaJsonTemplate: KafkaTemplate<String, Employee>
 ) {
 
+    private val log = LoggerFactory.getLogger(ProducerController::class.java)
+
     @GetMapping("producer/{text}")
     fun produceMessage(@PathVariable text:String): HttpEntity<Any?> {
+        log.info("producerMessage, text=$text")
         kafkaTemplate.send(topicName, text)
         return ResponseEntity(HttpStatus.CREATED)
     }
     @GetMapping("producer-json")
     fun produceJson(): HttpEntity<Any?> {
+        log.info("produceJson")
+
+        val employee = Employee(
+            name = "uri",
+            admissionDate = LocalDate.of(2019, 9, 23),
+            email = "oriol.canalias@gmail.com"
+        )
+        log.info("produceJson, employee=$employee")
         kafkaJsonTemplate.send(topicJsonName,
-            Employee(name = "uri",
-                admissionDate = LocalDate.of(2019,9, 23),
-                email = "oriol.canalias@gmail.com"))
+            employee
+        )
         return ResponseEntity(HttpStatus.CREATED)
     }
 
