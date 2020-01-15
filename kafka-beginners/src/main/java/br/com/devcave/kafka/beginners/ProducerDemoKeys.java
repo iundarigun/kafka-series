@@ -41,22 +41,19 @@ public class ProducerDemoKeys {
             logger.info("key: " + key);
 
             // Send data
-            producer.send(record, new Callback() {
-                @Override
-                public void onCompletion(RecordMetadata metadata, Exception exception) {
-                    // success or exception
-                    if (exception == null) {
-                        logger.info("Receives new metadata. \n" +
-                                "Topic: " + metadata.topic() + "\n" +
-                                "Partition: " + metadata.partition() + "\n" +
-                                "Offset: " + metadata.offset() + "\n" +
-                                "Timestamp: " + metadata.timestamp()
-                        );
-                    } else {
-                        logger.error("Error while producing", exception);
-                    }
-
+            producer.send(record, (metadata, exception) -> {
+                // success or exception
+                if (exception == null) {
+                    logger.info("Receives new metadata. \n" +
+                            "Topic: " + metadata.topic() + "\n" +
+                            "Partition: " + metadata.partition() + "\n" +
+                            "Offset: " + metadata.offset() + "\n" +
+                            "Timestamp: " + metadata.timestamp()
+                    );
+                } else {
+                    logger.error("Error while producing", exception);
                 }
+
             }).get(); // Get make synchronous - no in production
         }
         producer.flush();

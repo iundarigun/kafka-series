@@ -11,6 +11,7 @@ kafka:
 
 spring:
   kafka:
+    bootstrap-servers: localhost:9092
     producer:
       properties:
         spring:
@@ -20,3 +21,24 @@ spring:
                 headers: false
   application:
     name: spring-kafka
+  cloud:
+    stream:
+      default:
+        producer:
+          use-native-encoding: true
+      bindings:
+        cloud-stream-output:
+          destination: kafka-spring-topic
+      binding-retry-interval: 30
+      kafka:
+        binder:
+          health-timeout: 20
+
+
+management:
+  health:
+    binders:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always

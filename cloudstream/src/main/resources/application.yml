@@ -23,3 +23,11 @@ spring:
               serializer: org.apache.kafka.common.serialization.StringSerializer
   kafka:
     bootstrap-servers: localhost:9092
+
+management:
+  health:
+    binders:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always

@@ -222,4 +222,40 @@ $ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group 
 $ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group firstconsumer --reset-offsets --to-earliest --topic first_topic --execute
 ```
 
+## Configurações e informações avançadas
 
+### Configurando tópicos
+Há dois pontos importantes na hora de criar um tópico:
+- Número de partições
+- Factor de replicação
+Qualquer mudança nestes pontos, pode afetar a performance e o funcionamento. Por exemplo, se aumentar o número de partições, vai mudar nosso `key partition` e a ordem durante aquele período de transição não será garantida.
+
+#### Número de partições
+- Cada partição tem um throughput de x MB/s
+- Mais partições implica melhor paralelismo, melhor throughput, mais consumidores
+- Mais partições, porém, implica mais arquivos abertos no Kafka e mais trabalho para o Zookeeper
+- Em casos de uso normal, um número de partições 2x o número de brokers pode ser suficiente, mas se precisar escalar o consumo, pode não ser suficiente
+- É aceitado que cada tópico não tenha mais de 1000 partições, o broker não tenha mais de 2.000 ou 4.000 partições, e o cluster não gerencie mais de 20.000 partições
+
+### Clusters
+Alguns conselhos e advertências para clusters em produção. 
+- Não é fácil montar um cluster
+- Número ímpar de zookeepers, no mínimo três, em datacenters separados
+- Rodar os zookeepers e os brokers em servidores separados, isolados de outras aplicações também.
+- Implemente monitoração - ELK, NewRelic, Prometheus
+- É necessário um bom Kafka Admin
+- Tem alternativas de `Kafka as a service` na núvem, evitando alguns custos envolvidos.
+
+### Segmentos
+Os tópicos são feitos de partitions, e as partitions são feitas de segmentos, isso é arquivos. Cada arquivo ou segmento contém uma sequencia de dados ordenados por offset, e só um segmento está ativo no momento para escrita 
+
+![segments](images/partitionSegments.png)
+
+Esse sistema permite que seja muito rápida a leitura sequencial, mas seja não tão boa na leitura aleatória.
+
+Podemos configurar o tamanho de cada segmento e o tempo que um segmento fica aberto enquanto não estiver cheio (por padrão, uma semana).
+
+#### Log compaction
+O kafka prove uma otimização das chaves para reduzir o tamanho dos segmentos. Uma vez ativada, vai olhar para os segmentos fechados e vai "juntá-los" mantendo só as últimas informações de cada chave:
+
+![logCompactation](images/logCompaction.png)

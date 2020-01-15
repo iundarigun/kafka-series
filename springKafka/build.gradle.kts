@@ -19,11 +19,14 @@ extra["springCloudVersion"] = "Greenwich.SR3"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+	implementation("org.springframework.cloud:spring-cloud-stream")
+	implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka")
 }
 
 dependencyManagement {
