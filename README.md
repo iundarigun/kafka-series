@@ -1,10 +1,11 @@
 # Kafka
 
-## Filas
+## Diferença com filas
 
 O protocolo AMQP:
 
 ![AMQP](images/amqp-about.png)
+
 
 ## Conceitos
 
