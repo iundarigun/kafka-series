@@ -6,8 +6,10 @@ O protocolo AMQP:
 
 ![AMQP](images/amqp-about.png)
 
+Artigo comparando RabbitMQ: 
+- https://itnext.io/kafka-vs-rabbitmq-f5abc02e3912
 
-## Conceitos
+## Conceitos sobre Kafka
 
 ### Tópicos
 
