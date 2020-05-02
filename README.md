@@ -262,3 +262,89 @@ Podemos configurar o tamanho de cada segmento e o tempo que um segmento fica abe
 O kafka prove uma otimização das chaves para reduzir o tamanho dos segmentos. Uma vez ativada, vai olhar para os segmentos fechados e vai "juntá-los" mantendo só as últimas informações de cada chave:
 
 ![logCompactation](images/logCompaction.png)
+
+
+
+## Replication cross cluster
+When we replicate data in a cluster for some nodes, we call this *replication*. The same action is possible beetwen clusters, and we call this *mirroring*.
+
+*Use cases*:
+- DCs in diferent regions.
+- Redundancy. If one DC crash, with all data on the other DC, the application can used the second cluster without problems.
+- Cloud migrations: Some times we need data from database on one cloud to the other cloud. We can use Kafka connect to replicate this data beetwen DC controlling cross-dc traffic.
+
+Important: Kafka is not recommended to use with some brokers in one datacenter and other in another datacenter in the same cluster!
+
+*Issues of cross-dc communication*:
+- High latencies: Latency increases as the distance and the network hops.
+- Limited bandwidth
+- Higher costs
+
+### Replication Architectures
+
+#### Hub-and-Spokes Architecture
+One kafka cluster is the leader and the rest of kafkas are followers. 
+- Used when data is produced in multiple datacenters and some consumers need access to the entire data set.
+- It allows to applications process only the data local for his datacenter. 
+- Data only mirrored once, from local to center (leader). 
+- It is simple to deploy, configure and monitor
+- Processors in one regional datacenter can’t access data in another
+- Use of this pattern is usually limited to only parts of the data set
+
+#### Active-active Architecture
+This architecture is used when two or more datacenters share some or all of the data and each datacenter is able to both produce and consume events
+- Serve users from a nearby datacenter, without limited availability of data.
+- It is redundancy and resilience
+- The challenge is avoid conflicts when data is read and update asynchornously in multiple locations.  You will have conflicts and will need to deal with them.
+- An other challenge, especially with more than two datacenters, is that you will need a mirroring process for each pair of datacenters and each direction.
+- To avoid loops mirroring the same event, you can give for each topic a separate topic in the others datacenters. (Record headers can lead with this problem too)
+
+#### Active-Standby Architecture
+If the only requirement for multiple clusters is to support some kind of disaster scenario, this architecture copy all of data to the inactive cluster. In case of disaster on the first DC, we can active the second.
+- Simplicity in setup
+- No need to worry about access to data, handling conflicts, and other architectural complexities
+- Waste a good cluster
+- It is currently not possible to perform cluster failover in Kafka without either losing data or having
+duplicate events
+- The big problem is deal with offsets, because some strategies priorize recovery without loss data but duplicate processes, and some stratgies priorize loss data without duplicity.
+
+#### Strech Clusters
+ They are intended to protect the Kafka cluster from failure installing a single Kafka cluster across multiple datacenters. Is not mirroring, only replication.
+- The advantages of this architecture are in the synchronous replication
+- Both datacenters and all brokers in the cluster are used
+
+Kafka has a cross-cluster mirroring tool call MirrorMaker.
+
+### MirrorMaker
+We can replicate all or part of the data. It is the `official` tool for mirroring topics for diferents clusters. Underwood, this tool use a group of consumers and a producer to read from one Kafka cluster and write on the other cluster. To run:
+
+```
+$ /opt/kafka_2.12-2.3.0/bin/kafka-mirror-maker.sh --consumer.config ./consumer.properties --producer.config ./producer.properties --new.consumer --num.streams=2 --whitelist "*"
+```
+The consumer.properties and producer.properties files have a few configurations like consumer group, strategy and bootstrap url. `whitelist` is a regex for choosing topic names.
+
+Some points to consider:
+- For an active-active Architecture, careful with ciclye sync, because all events are mirroring between cluster. So, if a topic is mirrored from Cluster A to B, and from Cluster B to A, the events are mirroring eternally.
+- If a topic on the destiny cluster doesn't exists, it will be created, with the cluster default configuration. 
+- If we use a whitelist regex and create a new topic that matches with the regex, we need restart MirrorMaker to start to mirror the topic
+- Configure producer to compressed events is recommended, since bandwidth is the main bottleneck for cross-datacenter mirroring
+- Separate sensitive topics on a separate mirrorMaker is a good strategy too.
+- It strong recomended run on the destiny cluster, consuming data across DC, no producing cross DC. A consumer that is unable to connect to a cluster is much safer than a producer that can’t connect. There is no risk of losing events.
+
+Consume locally and produce remotely when you need to encrypt the data while it is transferred between the datacenters but you don’t need to encrypt the data inside the datacenter. If you use this consume locally and produce remotely, make sure MirrorMaker is configured to never lose events with acks=all and a sufficient number of retries
+
+
+### uReplicator
+Uber develop a tool to mirror data.
+- https://eng.uber.com/ureplicator-apache-kafka-replicator/
+- https://github.com/uber/uReplicator
+
+Uber implement a wrapper arround MirrorMaker with Apache Helix to manage the partition list. The motivation was to control the rebalancing delays and the dificulty to add new topics that not matched with running pattern.
+
+### Confluent's Replicator
+This tool resolves two problems. 
+- Configuration: If topic changes configuration on DC1 (retention, partitons), we don't realise and on disaster DC may be a problem when we need to use and configurations are diferent.
+- Active-active challanges: When we have more than two DCs, we need more and more MirrorMaker's cluster to mirror events between all datacenters.
+
+The Confluent's Replicator mirrors topic configurations and a single process can sync data with a group of clusters.
+
