@@ -326,7 +326,6 @@ The consumer.properties and producer.properties files have a few configurations 
 Some points to consider:
 - For an active-active Architecture, careful with ciclye sync, because all events are mirroring between cluster. So, if a topic is mirrored from Cluster A to B, and from Cluster B to A, the events are mirroring eternally.
 - If a topic on the destiny cluster doesn't exists, it will be created, with the cluster default configuration. 
-- If we use a whitelist regex and create a new topic that matches with the regex, we need restart MirrorMaker to start to mirror the topic
 - Configure producer to compressed events is recommended, since bandwidth is the main bottleneck for cross-datacenter mirroring
 - Separate sensitive topics on a separate mirrorMaker is a good strategy too.
 - It strong recomended run on the destiny cluster, consuming data across DC, no producing cross DC. A consumer that is unable to connect to a cluster is much safer than a producer that can’t connect. There is no risk of losing events.
