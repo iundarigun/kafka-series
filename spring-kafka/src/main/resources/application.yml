@@ -21,18 +21,6 @@ spring:
                 headers: false
   application:
     name: spring-kafka
-  cloud:
-    stream:
-      default:
-        producer:
-          use-native-encoding: true
-      bindings:
-        cloud-stream-output:
-          destination: kafka-spring-topic
-      binding-retry-interval: 30
-      kafka:
-        binder:
-          health-timeout: 20
 
 
 management:

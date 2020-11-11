@@ -46,15 +46,4 @@ class ProducerController(
         )
         return ResponseEntity(HttpStatus.CREATED)
     }
-
-    @GetMapping("employee")
-    fun employee(): HttpEntity<Employee> {
-        val employee = Employee(
-            name = "uri",
-            admissionDate = LocalDate.of(2019, 9, 23),
-            email = "oriol.canalias@gmail.com"
-        )
-        return ResponseEntity.ok(employee)
-    }
-
 }
