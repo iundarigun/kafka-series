@@ -25,3 +25,11 @@ HELP.md
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### Kafka docker ###
+/docker-compose/kafka1/**
+/docker-compose/kafka2/**
+/docker-compose/zoo1/**
+/docker-compose/zoo2/**
+.DS_Store
+
