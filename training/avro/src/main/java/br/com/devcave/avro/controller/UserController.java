@@ -15,8 +15,8 @@ public class UserController {
     private final Producer producer;
 
     @GetMapping
-    public String user(){
-        final User oriolCanalias = new User( "Oriol Canalias", 41, "Developer");
+    public String user() {
+        final User oriolCanalias = new User("Oriol Canalias", 41, "Developer");
         producer.sendMessage(oriolCanalias);
         return "OK";
     }

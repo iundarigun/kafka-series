@@ -23,6 +23,7 @@ public class ProducerController {
                 .id(new Random().nextLong())
                 .birthday(LocalDate.of(1980, 8, 7))
                 .build();
-        kafkaTemplate.send("customer-topic", customer.getId().toString(), customer);
+        final String key = new Random().nextBoolean() ? "oriol" : customer.getId().toString();
+        kafkaTemplate.send("customer-topic", key, customer);
     }
 }

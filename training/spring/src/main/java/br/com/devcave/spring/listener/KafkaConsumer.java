@@ -20,7 +20,7 @@ public class KafkaConsumer {
         log.info("partition={}, key {}. topic={}, customer, {}", partition, key, topic, customer);
     }
 
-    @KafkaListener(topics = "customer-topic", concurrency = "1")
+    @KafkaListener(topics = "customer-topic", concurrency = "10", containerFactory = "concurrentKafkaListenerContainerFactory")
     public void listenerConsumerRecord(final ConsumerRecord<String, Customer> record) {
         log.info("partition={}, key {}. topic={}, customer, {}", record.partition(), record.key(), record.topic(), record.value());
     }

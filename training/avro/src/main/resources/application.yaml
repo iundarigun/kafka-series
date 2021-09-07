@@ -9,7 +9,6 @@ spring:
       schema.registry.url: http://localhost:8081
     consumer:
       group-id: group_id
-      auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
     producer:
