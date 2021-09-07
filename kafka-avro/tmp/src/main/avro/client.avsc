@@ -1,0 +1,22 @@
+
+{
+  "namespace": "br.com.devcave.avro.domain",
+  "type": "record",
+  "name": "User",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string",
+      "avro.java.string": "String"
+    },
+    {
+      "name": "age",
+      "type": "int"
+    },
+    {
+      "name": "position",
+      "type": "string",
+      "avro.java.string": "String"
+    }
+  ]
+}

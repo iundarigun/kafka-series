@@ -1,0 +1,29 @@
+zoo1:
+  image: zookeeper:3.4.9
+  ports:
+    - "2181:2181"
+  environment:
+    ZOO_MY_ID: 1
+    ZOO_PORT: 2181
+    ZOO_SERVERS: server.1=zoo1:2888:3888
+  volumes:
+    - /opt/kafka-docker/zoo1/data:/data
+    - /opt/kafka-docker/zoo1/datalog:/datalog
+
+kafka1:
+  image: confluentinc/cp-kafka:5.2.1
+  ports:
+    - "9092:9092"
+    - "9093:9093"
+  environment:
+    KAFKA_ADVERTISED_LISTENERS: KAFKA_INTERNAL_LISTENER://localhost:9092, KAFKA_LOCAL_LISTENER://localhost:9093
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: KAFKA_INTERNAL_LISTENER:PLAINTEXT, KAFKA_LOCAL_LISTENER:PLAINTEXT
+    KAFKA_INTER_BROKER_LISTENER_NAME: KAFKA_INTERNAL_LISTENER
+    KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+    KAFKA_BROKER_ID: 1
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+  volumes:
+    - /opt/kafka-docker/kafka1/data:/var/lib/kafka/data
+  links:
+    - zoo1:zoo1
