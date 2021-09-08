@@ -13,8 +13,8 @@ public class Producer {
 
     private final KafkaTemplate<String, User> kafkaTemplate;
 
-    public void sendMessage(User user) {
-        this.kafkaTemplate.send("user-replication", user.getName(), user);
+    public void sendMessage(final User user) {
+        this.kafkaTemplate.send("user-replication", user.getFirstName(), user);
         log.info(String.format("Produced user -> %s", user));
     }
 }

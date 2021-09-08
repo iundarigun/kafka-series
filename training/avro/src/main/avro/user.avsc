@@ -1,0 +1,13 @@
+
+{
+  "namespace": "br.com.devcave.avro.domain",
+  "type": "record",
+  "name": "User",
+  "fields": [
+    { "name": "first_name", "type": "string", "doc": "First name of customer"},
+    { "name": "last_name", "type": "string", "doc": "Last name of customer"},
+    { "name":  "birthday", "type": {"type": "int", "logicalType":  "date"}, "doc":  "Date of birthday" },
+    { "name": "weight", "type": ["null","float"], "doc": "Weight in Kgs of customer", "default": null},
+    { "name": "automated_email", "type": "boolean", "default": true, "doc": "True if the user wants automatic emails"}
+  ]
+}

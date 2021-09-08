@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Consumer {
     @KafkaListener(topics = "user-replication", groupId = "group_id")
-    public void consume(ConsumerRecord<String, User> record) {
-        log.info("Consumed message -> {}", record.value());
+    public void consume(final ConsumerRecord<String, User> record) {
+        final User user = record.value();
+        log.info("Consumed message -> {}", user.getBirthday());
     }
 }

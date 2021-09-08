@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
@@ -16,7 +18,12 @@ public class UserController {
 
     @GetMapping
     public String user() {
-        final User oriolCanalias = new User("Oriol Canalias", 41, "Developer");
+        final User oriolCanalias =
+                User.newBuilder()
+                        .setFirstName("Oriol")
+                        .setLastName("Canalias")
+                        .setBirthday(LocalDate.of(2000, 10, 5))
+                        .build();
         producer.sendMessage(oriolCanalias);
         return "OK";
     }

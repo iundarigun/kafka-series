@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "namespace": "br.com.devcave.avro.domain",
+  "name": "User",
+  "doc": "Avro Schema for our User",
+  "fields": [
+    { "name": "first_name", "type": "string", "doc": "First name of user"},
+    { "name": "last_name", "type": "string", "doc": "Last name of user"},
+    { "name": "age", "type": "int", "doc": "Age of user"},
+    { "name": "height", "type": "float", "doc": "Height in cms of user"},
+    { "name": "weight", "type": ["null","float"], "doc": "Weight in Kgs of customer", "default": null },
+    { "name": "automated_email", "type": "boolean", "default": true, "doc": "True if the user wants automatic emails"}
+  ]
+}
