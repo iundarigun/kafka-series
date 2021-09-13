@@ -93,6 +93,16 @@ Common attributes in Json avro schema:
     - Changing tpye of a field
     - Renaming a required field (without default)
 
+### Good practices about Schema evolution
+
+Some advices about Avro schema:
+- Make your primary key required (no defaults)
+- Give default values to all the fields that could be removed in the future
+- Be very careful when Enums as they can't evolve over time
+- Don't rename fields. We can use `aliases`
+- When evolving a schema, ALWAYS give default values
+- When evolving a schema, NEVER delete a required field
+
 ## Running locally
 We can use a docker-compose to up a complete environment. You can find it on `docker-compose` folder, file `docker-compose-schema-registry.yml`
 
