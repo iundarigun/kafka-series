@@ -1,5 +1,12 @@
 # Kafka and Schema Registry
 
+Use Schema Registry with Kafka is a solution from Confluent to guantantee the consistency of the data. It provides a "contract" between producers and potencials consumers.
+
+Seems more a workarround than a native solution, because is the producer/consumer the responsible for the schema check. 
+
+![image](images/schema-registry.png)
+
+
 ## Avro format
 It is a serializable format, like Json, Protobuf or xml.
 
@@ -102,6 +109,12 @@ Some advices about Avro schema:
 - Don't rename fields. We can use `aliases`
 - When evolving a schema, ALWAYS give default values
 - When evolving a schema, NEVER delete a required field
+
+### Performance
+
+Avro files contains a the schema inside the file, so perhaps look heavier than json. The way that sends data make this better:
+
+![image](images/avro-data.png)
 
 ## Running locally
 We can use a docker-compose to up a complete environment. You can find it on `docker-compose` folder, file `docker-compose-schema-registry.yml`
